@@ -1,0 +1,55 @@
+// create an endpoint to fetch all the student details and another one to fetch one student details.
+
+// create an endpoint to fetch all the student details and another one to fetch one student details.
+
+POST http://localhost:4700/students
+Content-Type: application/json
+{
+    "id" : 1,
+    "name": "John",
+    "class" : "10th",
+    "fee balance": "1000"
+}
+{
+    "id" : 2,
+    "name": "James",
+    "class" : "11th",
+    "fee balance": "2000"
+}
+{
+    "id" : 3,
+    "name": "Jenny",
+    "class" : "12th",
+    "fee balance": "3000"
+}
+{
+    "id" : 4,
+    "name": "Jill",
+    "class" : "9th",
+    "fee balance": "4000"
+}
+{
+    "id" : 5,
+    "name": "Jack",
+    "class" : "8th",
+    "fee balance": "5000"
+}
+
+GET http://localhost:4700/students
+Content-Type: application/json
+
+
+GET http://localhost:4700/students/1
+Content-Type: application/json
+
+UPDATE http://localhost:4700/students/1
+Content-Type: application/json
+{
+    "id" : 1,
+    "name": "Evans",
+    "class" : "10th",
+    "fee balance": "900"
+}
+
+DELETE http://localhost:4700/students/5
+Content-Type: application/json
