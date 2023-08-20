@@ -11,7 +11,7 @@ Content-Type: application/json
 
 ### GET ALL PROJECTS
 GET http://localhost:4700/students
-Content-Type: application/json
+
 
 ### GET ONE PROJECT
 GET http://localhost:4700/students/3

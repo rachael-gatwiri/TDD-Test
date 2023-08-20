@@ -36,12 +36,11 @@ import mssql from 'mssql';
 
  const getstudents = async(req, res)=>{
     try{
-        const {id} = req.params
         const pool = await mssql.connect(sqlConfig)
 
-        const students = (await pool.request().execute('getstudentsPROC')).recordset
+        const allstudents = (await pool.request().execute('getstudentsPROC')).recordset
 
-       return res.status(200).json({students})
+        return res.status(200).json({students: allstudents})
     } catch(error){
         return res.json({error})
     }
@@ -56,7 +55,6 @@ import mssql from 'mssql';
         const students = (await pool.request().input('id', id).execute('getOnestudentsPROC')).recordset
 
        return res.status(200).json({students})
-
     } catch(error){
         return res.json({error})
     }
