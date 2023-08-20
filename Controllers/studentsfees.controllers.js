@@ -1,14 +1,12 @@
-import v4 from 'uuid/v4';
-import { sqlConfig } from '../Config/config';
+import {v4} from 'uuid';
+import { sqlConfig } from '../Config/config.js';
 import mssql from 'mssql';
-import { createstudentsTable } from  '../Controllers/studentsfees.controllers';
+// import { createstudentsTable} from '../Database/Tables/table';
 
-
-
-const createstudentsTable = async(req, res)=>{
+ const createStudent = async(req, res)=>{
     try{
         const id = v4()
-        const {name, class, schoolfees} = req.body
+        const {name, grade, fees} = req.body
         
         const pool = await mssql.connect(sqlConfig)
 
@@ -16,38 +14,40 @@ const createstudentsTable = async(req, res)=>{
             const result = await pool.request()
             .input('id', mssql.VarChar, id)
             .input('name', mssql.VarChar, name)
-            .input('class', mssql.VarChar, class)
-            .input('schoolfees', mssql.Int, schoolfees)
-            .execute('createstudentsTablePROC')
+            .input('grade', mssql.VarChar, grade)
+            .input('fees', mssql.Int, fees)
+            .execute('createstudentsPROC')
 
-            if(result.rowsAffected == 1){
-                return res.json({
-                    message: 'student created successfully'
+            if (result.rowsAffected == 1) {
+                return res.status(200).json({
+                    message: 'Student added successfully'
                 })
             }else{
                 return res.json({
-                    message: 'studentcreation failed'
+                    message: 'student creation failed'
                 })
-            }
         }
+    }
     } catch(error){
         return res.json({error})
     }
+
 }
 
-const getstudents = async(req, res)=>{
+ const getstudents = async(req, res)=>{
     try{
+        const {id} = req.params
         const pool = await mssql.connect(sqlConfig)
 
-        const allstudents = (await pool.request().execute('getstudentsPROC')).recordset
+        const students = (await pool.request().execute('getstudentsPROC')).recordset
 
-        return res.status(200).json({students: allstudents})
+       return res.status(200).json({students})
     } catch(error){
         return res.json({error})
     }
 }
 
-const getOnestudent = async(req, res)=>{
+ const getOnestudent = async(req, res)=>{
     try{
         const {id} = req.params
 
@@ -55,11 +55,14 @@ const getOnestudent = async(req, res)=>{
 
         const students = (await pool.request().input('id', id).execute('getOnestudentsPROC')).recordset
 
-        return res.status(200).json({students: students})
+       return res.status(200).json({students})
+
+    } catch(error){
+        return res.json({error})
     }
 }
 
-const updatefees = async(req, res)=>{
+ const updatefees = async(req, res)=>{
     try{
         const {id} = req.params
 
@@ -69,7 +72,7 @@ const updatefees = async(req, res)=>{
 
         const result = (await pool.request()
         .input('id', mssql.VarChar, id)
-        .input('schoolfees', mssql.Int, schoolfees)
+        .input('fees', mssql.Int, schoolfees)
         .execute('updatefeesPROC'));
 
         if(result.rowsAffected == 1){
@@ -78,7 +81,7 @@ const updatefees = async(req, res)=>{
             })
         }else{
             res.status(400).json({
-                message: 'fees not found'
+                message: 'student not found'
             })
         }
     }  catch(error){
@@ -86,35 +89,31 @@ const updatefees = async(req, res)=>{
     }
 }
 
-    const deletestudent = async(req, res)=>{
-        try{
-            const {id} = req.params
+ const deletestudent = async(req, res)=>{
+    try{
+        const {id} = req.params
 
-            const pool = await mssql.connect(sqlConfig)
+        const pool = await mssql.connect(sqlConfig)
 
-            const result = (await pool.request()
-            .input('id', mssql.VarChar, id)
-            .execute('deletestudentPROC'));
+        const result = (await pool.request()
+        .input('id', mssql.VarChar, id)
+        .execute('deletestudentPROC'));
 
-            if(result.rowsAffected == 1){
-                res.status(200).json({
-                    message: 'student deleted successfully'
-                })
-            }else{
-                res.status(400).json({
-                    message: 'student not found'
-                })
-            }
-        }  catch(error){
-            return res.json({error})
+        if(result.rowsAffected == 1){
+            res.status(200).json({
+                message: 'student deleted successfully'
+            })
+        }else{
+            res.status(400).json({
+                message: 'student not found'
+            })
         }
+    }  catch(error){
+        return res.json({error})
     }
-
-module.exports = {
-    createstudentsTable,
-    getstudents,
-    getOnestudent,
-    updatefees,
-    deletestudent
 }
+
+
+
+export {createStudent, getstudents, getOnestudent, updatefees, deletestudent }
 

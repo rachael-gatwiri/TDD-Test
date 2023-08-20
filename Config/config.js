@@ -1,30 +1,17 @@
-const mssql = require ('mssql')
-const dotenv = require ('dotenv')
-dotenv.config()
-
+import mssql from 'mssql';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const sqlConfig = {
     user: process.env.DB_USER,
     password: process.env.DB_PWD,
     database: process.env.DB_NAME,
     server: 'localhost',
-    pool: {
-        max : 10,
-        min : 0,
-        idleTimeoutMillis: 30000
-    },
-    options:{
+    options: {
         encrypt: false,
-        trustServerCertificate: false
+        trustServerCertificate: true
     }
+
 }
 
-mssql.connect(sqlConfig).then(pool =>{
-    if(pool.connected){
-        console.log('connected to db ...');
-    }
-})
-
-module.exports = {
-    sqlConfig
-}
+export { sqlConfig }
